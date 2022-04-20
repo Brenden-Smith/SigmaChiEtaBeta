@@ -9,6 +9,8 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import { ThemeProvider } from '@emotion/react'
 import IosShareSharpIcon from "@mui/icons-material/IosShareSharp";
+import { doc, onSnapshot } from 'firebase/firestore'
+import { db } from '../firebase'
 
 const theme = createTheme({
   typography: {
@@ -46,15 +48,11 @@ const ProfilePhoto = () => {
   );
 }
 
-const Links = () => {
-  const [objects, setObjects] = useState<Array<string>>([]);
-  
-  useEffect(() => {
-    setObjects(["Recruitment", "Rush Video", "Sweetheart Application"]);
-  }, []);
-
+const Links = ({items}: {
+  items: any,
+}) => {
   return <Stack direction="column" spacing={2}>
-    {objects.map((title, index) => {
+    {items.map((item: any, index: any) => {
       return (
         <Button 
           variant="contained" 
@@ -65,9 +63,11 @@ const Links = () => {
             height: 50,
             color: "white"
           }}
+          href={item.url}
+          target="_blank"
         >
           <Typography>
-            {title}
+            {item.title}
           </Typography>
         </Button>
       );
@@ -76,18 +76,20 @@ const Links = () => {
 }
 
 
-const SocialLinks = () => {
+const SocialLinks = ({items}: {
+  items: any
+}) => {
   const icon = {height: 35, width: 35};
 
   return (
     <Stack direction="row">
-      <IconButton size="large" href="https://instagram.com/sigmachilongbeach" target="_blank">
+      <IconButton size="large" href={items.instagram} target="_blank">
         <InstagramIcon fontSize="large" />
       </IconButton>
-      <IconButton size="large">
+      <IconButton size="large" href={items.facebook} target="_blank">
         <FacebookIcon fontSize="large" />
       </IconButton>
-      <IconButton size="large">
+      <IconButton size="large" href={items.twitter} target="_blank">
         <TwitterIcon fontSize="large" />
       </IconButton>
     </Stack>
@@ -127,6 +129,20 @@ const ShareIcon = () => {
 
 
 const Home: NextPage = () => {
+
+  const [links, setLinks] = useState<any>([]);
+  const [socials, setSocials] = useState<any>([]);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(doc(db, "links/index"), (snapshot) => {
+      setLinks(snapshot.data()!.links);
+      setSocials(snapshot.data()!.socials);
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <div className={styles.main}>
@@ -134,9 +150,9 @@ const Home: NextPage = () => {
           <Stack direction="column" className={styles.container} spacing={1}>
             <ProfilePhoto />
             <Typography variant="h5">Sigma Chi Long Beach</Typography>
-            <SocialLinks />
+            <SocialLinks items={socials}/>
           </Stack>
-          <Links />
+          <Links items={links}/>
         </Stack>
         <ShareIcon/>
       </div>

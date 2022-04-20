@@ -1,39 +1,159 @@
-import { Input, Stack, Typography } from "@mui/material";
+import { Button, Input, Stack, Typography } from "@mui/material";
+import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { Formik } from "formik";
+import { useEffect, useState } from "react";
+import { db } from "../firebase";
+
+function Object({value, setValue}: {
+  value: any,
+  setValue: any
+}) {
+
+  return (
+    <Input
+      sx={{
+        fontSize: "1rem",
+        width: "100%",
+      }}
+      value={value}
+      onChange={(e: any) => {
+        setValue(e.target.value);
+      }}
+    />
+  );
+}
 
 export function SocialMedia() {
+
+  const [data, setData] = useState<any>({});
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      doc(db, "links/index"),
+      (snapshot) => {
+        setData(snapshot.data()!.socials);
+      }
+    );
+    return () => {
+      unsubscribe();
+    }
+  }, []);
+
   return (
-    <>
-      <Typography variant="h5">Social Media</Typography>
-      <Stack direction="row" spacing={2}>
-        <Stack direction="column" spacing={2} sx={{ width: "100%" }}>
-          <Typography variant="body1">Facebook</Typography>
-          <Typography variant="body1">Instagram</Typography>
-          <Typography variant="body1">Twitter</Typography>
-        </Stack>
-        <Stack direction="column" spacing={2} sx={{ width: "100%" }}>
-          <Input
-            sx={{
-              fontSize: "1rem",
-              width: "100%",
-            }}
-            value="https://www.facebook.com/your-page-name"
-          />
-          <Input
-            sx={{
-              fontSize: "1rem",
-              width: "100",
-            }}
-            value="https://www.instagram.com/your-page-name"
-          />
-          <Input
-            sx={{
-              fontSize: "1rem",
-              width: "100",
-            }}
-            value="https://www.twitter.com/your-page-name"
-          />
-        </Stack>
-      </Stack>
-    </>
+    <Stack direction="column" spacing={2}>
+      <Formik
+        initialValues={{
+          facebook: data.facebook,
+          instagram: data.instagram,
+          twitter: data.twitter,
+        }}
+        enableReinitialize
+        onSubmit={(values, { setSubmitting }) => {
+          setSubmitting(true);
+          updateDoc(doc(db, "links/index"), { socials: {
+            facebook: values.facebook,
+            instagram: values.instagram,
+            twitter: values.twitter,
+          } 
+        });
+          setSubmitting(false);
+        }}
+        validate={(values) => {
+          const errors: any = {};
+          if (!values.facebook) {
+            errors.facebook = "Required";
+          }
+          if (values.facebook) {
+            try {
+              const url = new URL(values.facebook);
+              if (!url.hostname) {
+                errors.facebook = "Invalid URL";
+              }
+            } catch (e) {
+              errors.facebook = "Invalid URL";
+            }
+          }
+          if (!values.twitter) {
+            errors.twitter = "Required";
+          }
+          if (values.twitter) {
+            try {
+              const url = new URL(values.twitter);
+              if (!url.hostname) {
+                errors.twitter = "Invalid URL";
+              }
+            } catch (e) {
+              errors.twitter = "Invalid URL";
+            }
+          }
+          if (!values.instagram) {
+            errors.instagram = "Required";
+          }
+          if (values.instagram) {
+            try {
+              const url = new URL(values.instagram);
+              if (!url.hostname) {
+                errors.instagram = "Invalid URL";
+              }
+            } catch (e) {
+              errors.instagram = "Invalid URL";
+            }
+          }
+          return errors;
+        }}
+      >
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          handleReset,
+          isSubmitting
+        }) => (
+          <>
+            <Stack direction="row" spacing={2} justifyContent="space-between">
+              <Typography variant="h5">Social Media</Typography>
+              <Button
+                variant="contained"
+                sx={{ backgroundColor: "green", color: "white" }}
+                disabled={JSON.stringify(values) === JSON.stringify(data) || isSubmitting}
+                onClick={() => handleSubmit()}
+              >
+                Save
+              </Button>
+            </Stack>
+            <Stack direction="row" spacing={2}>
+              <Stack direction="column" spacing={2} sx={{ width: "100%" }}>
+                <Typography variant="body1">Facebook</Typography>
+                <Typography variant="body1">Instagram</Typography>
+                <Typography variant="body1">Twitter</Typography>
+              </Stack>
+              <Stack direction="column" spacing={2} sx={{ width: "100%" }}>
+                <Object
+                  value={values.facebook}
+                  setValue={(value: string) => {
+                    handleChange({ target: { name: "facebook", value } });
+                  }}
+                />
+                <Object
+                  value={values.instagram}
+                  setValue={(value: string) => {
+                    handleChange({ target: { name: "instagram", value } });
+                  }}
+                />
+                <Object
+                  value={values.twitter}
+                  setValue={(value: string) => {
+                    handleChange({ target: { name: "twitter", value } });
+                  }}
+                />
+              </Stack>
+            </Stack>
+          </>
+        )}
+      </Formik>
+    </Stack>
   );
 }

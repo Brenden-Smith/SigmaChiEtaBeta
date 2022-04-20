@@ -30,8 +30,12 @@ export function AddLinkDialog({open, setOpen}: {
           errors.url = "Required";
         }
         if (values.url) {
-          const url = new URL(values.url);
-          if (!url.hostname) {
+          try {
+            const url = new URL(values.url);
+            if (!url.hostname) {
+              errors.url = "Invalid URL";
+            }
+          } catch (e) {
             errors.url = "Invalid URL";
           }
         }
