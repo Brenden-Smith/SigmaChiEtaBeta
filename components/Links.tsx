@@ -7,6 +7,7 @@ import { DeleteDialog } from './DeleteDialog';
 import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { AddLinkDialog } from './AddLinkDialog';
+import EditIcon from '@mui/icons-material/Edit';
 
 const inactiveShadow = "0px 0px 0px rgba(0,0,0,0.8)";
 
@@ -63,39 +64,35 @@ function LinkItem({ item }: {
           width: "100%",
         }}
       >
-        <Stack direction="row" spacing={2}>
-          <Stack
-            direction="column"
-            justifyItems="center"
-            sx={{ height: "100%" }}
-          >
-            <DeleteDialog open={delDialog} setOpen={openDelDialog} item={item} />
-            <IconButton onClick={() => openDelDialog(true)}>
-              <DeleteIcon />
-            </IconButton>
-            <IconButton onPointerDown={(e) => controls.start(e)} disableTouchRipple>
-              <MenuIcon />
-            </IconButton>
+        <Stack direction="row" justifyContent="space-between">
+          <Stack direction="column">
+            <Stack direction="row" spacing={1} alignItems="center">
+              <DeleteDialog
+                open={delDialog}
+                setOpen={openDelDialog}
+                item={item}
+              />
+              <IconButton onClick={() => openDelDialog(true)}>
+                <DeleteIcon />
+              </IconButton>
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                {title}
+              </Typography>
+            </Stack>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <IconButton
+                onPointerDown={(e) => controls.start(e)}
+                disableTouchRipple
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="body1">{url}</Typography>
+            </Stack>
           </Stack>
-
-          <Stack direction="column" spacing={2} sx={{ width: "100%" }}>
-            <Input
-              sx={{
-                fontSize: "1rem",
-                fontWeight: "bold",
-                width: "100%",
-              }}
-              value={title}
-              fullWidth
-            />
-            <Input
-              sx={{
-                fontSize: "1rem",
-                width: "100%",
-              }}
-              fullWidth
-              value={url}
-            />
+          <Stack direction="column" justifyContent="center">
+            <IconButton>
+              <EditIcon />
+            </IconButton>
           </Stack>
         </Stack>
       </Paper>
@@ -148,15 +145,23 @@ export function Links() {
         </Stack>
       </Stack>
       <Stack direction="row"></Stack>
-      <Reorder.Group axis="y" onReorder={setLinks} values={links}
-    style={{
-      listStyle: "none",
-    }}>
-      {links.map((item: any) => (
-        <LinkItem key={item.id} item={item} />
-      ))}
-    </Reorder.Group>
+      <Reorder.Group
+        axis="y"
+        onReorder={setLinks}
+        values={links}
+        style={{
+          listStyle: "none",
+          overflowY: "scroll",
+        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        layoutScroll
+      >
+        {links.map((item: any) => (
+          <LinkItem key={item.id} item={item} />
+        ))}
+      </Reorder.Group>
     </Stack>
-    
   );
 }
