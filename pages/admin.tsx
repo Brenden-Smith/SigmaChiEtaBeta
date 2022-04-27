@@ -20,7 +20,7 @@ import { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 import { authState, signIn, signOut } from "../firebase";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { AddLinkDialog, LinkList, Links, SocialMedia } from "../components";
+import { Links, SocialMedia } from "../components";
 
 const theme = createTheme({
   typography: {
@@ -181,36 +181,28 @@ const Admin: NextPage = () => {
           <Grid container wrap="nowrap">
             <Grid
               item
-              component={Paper}
               xs={12}
               md={4}
-              sx={{ margin: 2, padding: 2 }}
             >
-              <Links />
+              <Grid item component={Paper} sx={{ margin: 2, padding: 2 }}>
+                <SocialMedia />
+              </Grid>
+              <Grid item component={Paper} sx={{ margin: 2, padding: 2 }}>
+                <Links />
+              </Grid>
             </Grid>
             <Grid
               item
               component={Paper}
               xs={12}
-              md={4}
-              sx={{ margin: 2, padding: 2 }}
-            >
-              <SocialMedia />
-            </Grid>
-            <Grid
-              item
-              component={Paper}
-              xs={12}
-              md={4}
+              md={8}
               sx={{ margin: 2, padding: 2 }}
             >
               <Typography variant="h5">Analytics</Typography>
             </Grid>
           </Grid>
         </Hidden>
-        <Hidden mdUp>
-          Mobile Layout
-        </Hidden>
+        <Hidden mdUp>Mobile Layout</Hidden>
       </div>
     </ThemeProvider>
   ) : (
