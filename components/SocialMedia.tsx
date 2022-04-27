@@ -1,3 +1,5 @@
+import { Facebook, Instagram } from "@mui/icons-material";
+import Twitter from "@mui/icons-material/Twitter";
 import { Button, Input, Stack, Typography } from "@mui/material";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { Formik } from "formik";
@@ -50,12 +52,13 @@ export function SocialMedia() {
         enableReinitialize
         onSubmit={(values, { setSubmitting }) => {
           setSubmitting(true);
-          updateDoc(doc(db, "links/index"), { socials: {
-            facebook: values.facebook,
-            instagram: values.instagram,
-            twitter: values.twitter,
-          } 
-        });
+          updateDoc(doc(db, "links/index"), {
+            socials: {
+              facebook: values.facebook,
+              instagram: values.instagram,
+              twitter: values.twitter,
+            },
+          });
           setSubmitting(false);
         }}
         validate={(values) => {
@@ -110,7 +113,7 @@ export function SocialMedia() {
           handleBlur,
           handleSubmit,
           handleReset,
-          isSubmitting
+          isSubmitting,
         }) => (
           <>
             <Stack direction="row" spacing={2} justifyContent="space-between">
@@ -118,31 +121,36 @@ export function SocialMedia() {
               <Button
                 variant="contained"
                 sx={{ backgroundColor: "green", color: "white" }}
-                disabled={JSON.stringify(values) === JSON.stringify(data) || isSubmitting}
+                disabled={
+                  JSON.stringify(values) === JSON.stringify(data) ||
+                  !isSubmitting
+                }
                 onClick={() => handleSubmit()}
               >
                 Save
               </Button>
             </Stack>
-            <Stack direction="row" spacing={2}>
-              <Stack direction="column" spacing={2} sx={{ width: "100%" }}>
-                <Typography variant="body1">Facebook</Typography>
-                <Typography variant="body1">Instagram</Typography>
-                <Typography variant="body1">Twitter</Typography>
-              </Stack>
-              <Stack direction="column" spacing={2} sx={{ width: "100%" }}>
+            <Stack direction="column" spacing={2} sx={{ width: "100%" }}>
+              <Stack direction="row" spacing={2} alignItems="center">
+                <Facebook/>
                 <Object
                   value={values.facebook}
                   setValue={(value: string) => {
                     handleChange({ target: { name: "facebook", value } });
                   }}
                 />
+              </Stack>
+              <Stack direction="row" spacing={2} alignItems="center">
+                <Instagram/>
                 <Object
                   value={values.instagram}
                   setValue={(value: string) => {
                     handleChange({ target: { name: "instagram", value } });
                   }}
                 />
+              </Stack>
+              <Stack direction="row" spacing={2} alignItems="center">
+                <Twitter/>
                 <Object
                   value={values.twitter}
                   setValue={(value: string) => {
