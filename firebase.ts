@@ -1,6 +1,8 @@
+import { Analytics, getAnalytics } from 'firebase/analytics';
 import { initializeApp } from 'firebase/app';
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAIsUW_YRbzXBkCFeiBCClRMuq04Sw4PVI",
@@ -12,7 +14,7 @@ const firebaseConfig = {
   measurementId: "G-JSHKRYX5Q0",
 };
 
-initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
 export async function signIn(email: string, password: string) {
   const result = await signInWithEmailAndPassword(getAuth(), email, password);
@@ -32,3 +34,11 @@ export async function signOut() {
 }
 
 export const db = getFirestore();
+
+export const useAnalytics = () => {
+  const [state, setState] = useState<Analytics>();
+  useEffect(() => {
+    setState(getAnalytics(app));
+  }, []);
+  return state;
+}
