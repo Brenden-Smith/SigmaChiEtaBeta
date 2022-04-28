@@ -5,9 +5,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import MenuIcon from "@mui/icons-material/Menu";
 import { DeleteDialog } from './DeleteDialog';
 import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
-import { db } from '../firebase';
-import { AddLinkDialog } from './AddLinkDialog';
+import { db } from '../../firebase';
 import EditIcon from '@mui/icons-material/Edit';
+import { LinkDialog } from './LinkDialog';
 
 const inactiveShadow = "0px 0px 0px rgba(0,0,0,0.8)";
 
@@ -35,8 +35,9 @@ function useRaisedShadow(value: MotionValue<number>) {
   return boxShadow;
 }
 
-function LinkItem({ item }: { 
+function LinkItem({ item, update }: { 
   item: Record<string, string>
+  update: Function
 }) {
 
   const y = useMotionValue(0);
@@ -45,6 +46,7 @@ function LinkItem({ item }: {
   const controls = useDragControls();
 
   const [delDialog, openDelDialog] = useState(false);
+  const [editDialog, openEditDialog] = useState(false);
 
   return (
     <Reorder.Item
@@ -72,6 +74,12 @@ function LinkItem({ item }: {
                 setOpen={openDelDialog}
                 item={item}
               />
+              <LinkDialog
+                open={editDialog}
+                setOpen={openEditDialog}
+                link={item}
+                update={update}
+              />
               <IconButton onClick={() => openDelDialog(true)}>
                 <DeleteIcon />
               </IconButton>
@@ -90,7 +98,7 @@ function LinkItem({ item }: {
             </Stack>
           </Stack>
           <Stack direction="column" justifyContent="center">
-            <IconButton>
+            <IconButton onClick={() => openEditDialog(true)}>
               <EditIcon />
             </IconButton>
           </Stack>
@@ -103,7 +111,6 @@ function LinkItem({ item }: {
 export function Links() {
 
   const [links, setLinks] = useState<any>([]);
-  const [data, setData] = useState<any>([]);
   const [addLink, setAddLink] = useState(false);
 
   useEffect(() => {
@@ -111,7 +118,6 @@ export function Links() {
       doc(db, "links/index"),
       (snapshot) => {
         setLinks(snapshot.data()!.links);
-        setData(snapshot.data()!.links);
       }
     )
     return () => {
@@ -119,12 +125,20 @@ export function Links() {
     }
   }, []);
 
+  function updateLink(item: any) {
+    const newLinks = [...links];
+    const index = newLinks.findIndex((link) => link.id === item.id);
+    newLinks[index] = item;
+    setLinks(newLinks);
+    updateDoc(doc(db, "links/index"), { links: newLinks });
+  }
+
   return (
     <Stack direction="column" spacing={2} sx={{ width: "100%" }}>
       <Stack direction="row" spacing={2} justifyContent="space-between">
         <Typography variant="h5">Links</Typography>
         <Stack direction="row" spacing={2}>
-          <AddLinkDialog open={addLink} setOpen={setAddLink} />
+          <LinkDialog open={addLink} setOpen={setAddLink} />
           <Button
             variant="contained"
             sx={{ color: "white" }}
@@ -132,34 +146,26 @@ export function Links() {
           >
             Add New Link
           </Button>
-          <Button
-            variant="contained"
-            sx={{ backgroundColor: "green", color: "white" }}
-            disabled={JSON.stringify(links) === JSON.stringify(data)}
-            onClick={() => {
-              updateDoc(doc(db, "links/index"), { links: links });
-            }}
-          >
-            Save
-          </Button>
         </Stack>
       </Stack>
       <Stack direction="row"></Stack>
       <Reorder.Group
         axis="y"
-        onReorder={setLinks}
+        onReorder={(newLinks) => {
+          updateDoc(doc(db, "links/index"), { links: newLinks });
+          setLinks(newLinks);
+        }}
         values={links}
         style={{
           listStyle: "none",
-          overflowY: "scroll",
+          overflow: "hidden",
         }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        layoutScroll
       >
         {links.map((item: any) => (
-          <LinkItem key={item.id} item={item} />
+          <LinkItem key={item.id} item={item} update={updateLink}/>
         ))}
       </Reorder.Group>
     </Stack>

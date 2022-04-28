@@ -4,7 +4,7 @@ import { Button, Input, Stack, Typography } from "@mui/material";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { Formik } from "formik";
 import { useEffect, useState } from "react";
-import { db } from "../firebase";
+import { db } from "../../firebase";
 
 function Object({value, setValue}: {
   value: any,
