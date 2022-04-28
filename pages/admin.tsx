@@ -19,8 +19,7 @@ import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 import { authState, signIn, signOut } from "../firebase";
-import LogoutIcon from "@mui/icons-material/Logout";
-import { Links, SocialMedia } from "../components";
+import { Links, NavBar, SocialMedia } from "../components/admin";
 
 const theme = createTheme({
   typography: {
@@ -161,22 +160,7 @@ const Admin: NextPage = () => {
   ) : auth === true ? (
     <ThemeProvider theme={theme}>
       <div className={styles.main}>
-        <AppBar>
-          <Toolbar>
-            <Typography variant="h6" color="white">
-              Administrator Panel
-            </Typography>
-            <div style={{ flexGrow: 1 }} />
-            <IconButton
-              edge="end"
-              aria-label="logout"
-              sx={{ color: "white" }}
-              onClick={() => signOut()}
-            >
-              <LogoutIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
+        <NavBar/>
         <Hidden smDown>
           <Grid container wrap="nowrap">
             <Grid
@@ -202,7 +186,16 @@ const Admin: NextPage = () => {
             </Grid>
           </Grid>
         </Hidden>
-        <Hidden mdUp>Mobile Layout</Hidden>
+        <Hidden smUp>
+          <Grid container>
+            <Grid item component={Paper} sx={{ margin: 2, padding: 2 }} xs={12}>
+              <SocialMedia />
+            </Grid>
+            <Grid item component={Paper} sx={{ margin: 2, padding: 2 }} xs={12}> 
+              <Links />
+            </Grid>
+          </Grid>
+        </Hidden>
       </div>
     </ThemeProvider>
   ) : (

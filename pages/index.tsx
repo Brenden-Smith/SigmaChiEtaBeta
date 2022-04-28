@@ -55,7 +55,7 @@ const ProfilePhoto = () => {
     <Avatar
       sx={{ height: 100, width: 100 }}
     >
-      <Image src={require("../assets/img/profile.jpg")} style={{ height: 100, width: 100 }} />
+      <Image src={require("../assets/img/profile.jpg")} style={{ height: 100, width: 100 }} alt="logo"/>
     </Avatar>
   );
 }
