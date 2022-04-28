@@ -9,7 +9,8 @@
 /coverage
 
 # next.js
-/.next/
+src/.next/
+.next/
 /out/
 
 # production
@@ -33,3 +34,7 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+.firebase
+.github
+
