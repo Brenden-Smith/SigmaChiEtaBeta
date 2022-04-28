@@ -43,7 +43,6 @@ function LinkItem({ item, update }: {
   const y = useMotionValue(0);
   const boxShadow = useRaisedShadow(y);
   const { title, url, id } = item;
-  const controls = useDragControls();
 
   const [delDialog, openDelDialog] = useState(false);
   const [editDialog, openEditDialog] = useState(false);
@@ -53,8 +52,6 @@ function LinkItem({ item, update }: {
       value={item}
       id={id}
       style={{ y, boxShadow, margin: "15px" }}
-      dragControls={controls}
-      dragListener={false}
     >
       <Paper
         sx={{
@@ -89,7 +86,6 @@ function LinkItem({ item, update }: {
             </Stack>
             <Stack direction="row" spacing={1} alignItems="center">
               <IconButton
-                onPointerDown={(e) => controls.start(e)}
                 disableTouchRipple
               >
                 <MenuIcon />

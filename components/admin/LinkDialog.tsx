@@ -71,7 +71,7 @@ export function LinkDialog({ open, setOpen, link, update }: { open: any; setOpen
           <DialogTitle>
             <Typography variant="h6">{link ? "Edit Link" : "Create New Link"}</Typography>
           </DialogTitle>
-          <DialogContent>
+          <DialogContent sx={{overflow: "visible"}}>
             <Stack direction="column" spacing={2}>
               <TextField
                 label="Name"
