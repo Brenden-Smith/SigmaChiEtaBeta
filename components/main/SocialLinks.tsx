@@ -4,18 +4,9 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import { logEvent } from "firebase/analytics";
 import { analytics, db } from "../../firebase";
 import { IconButton, Stack } from "@mui/material";
-import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
+import "react";
 
-export const SocialLinks = () => {
-
-  const [socials, setSocials] = useState<any>([]);
-
-  useEffect(() => {
-    getDoc(doc(db, "socials/index")).then((snap) => {
-      setSocials(snap.data()!.socials);
-    });
-  }, [socials]);
+export const SocialLinks = ({ socials }: { socials: any}) => {
 
   // Render component
   return (

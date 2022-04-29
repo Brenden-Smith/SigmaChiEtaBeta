@@ -1,13 +1,8 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 
-declare global {
-  interface Window {
-    showOpenDialog?: any,
-  }
-}
-function MyApp({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   return <Component {...pageProps} />
 }
 
-export default MyApp
+export default App

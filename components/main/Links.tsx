@@ -1,18 +1,9 @@
 import { Button, Stack } from "@mui/material";
 import { logEvent } from "firebase/analytics";
-import { doc, getDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { analytics, db } from "../../firebase";
+import "react";
+import { analytics } from "../../firebase";
 
-export const Links = () => {
-
-  // Listen for link changes
-  const [links, setLinks] = useState<any>([]);
-  useEffect(() => {
-    getDoc(doc(db, "links/index")).then((snap) => {
-      setLinks(snap.data()!.links);
-    });
-  }, []);
+export const Links = ({ links }: { links: any }) => {
 
   // Render components
   return (

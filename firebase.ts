@@ -18,6 +18,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 let analytics: Analytics;
+
 if (typeof window !== "undefined") {
   initializeAppCheck(app, {
     provider: new ReCaptchaV3Provider(
