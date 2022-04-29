@@ -1,7 +1,8 @@
 import { AppBar, Hidden, IconButton, Toolbar, Typography } from "@mui/material";
-import { signOut } from "../../firebase";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase";
 
 export function NavBar() {
   return <AppBar>
@@ -19,7 +20,7 @@ export function NavBar() {
         edge="end"
         aria-label="logout"
         sx={{ color: "white" }}
-        onClick={() => signOut()}
+        onClick={() => signOut(auth)}
       >
         <LogoutIcon />
       </IconButton>

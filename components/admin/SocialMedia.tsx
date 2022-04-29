@@ -29,9 +29,10 @@ export function SocialMedia() {
 
   const [data, setData] = useState<any>({});
 
+  // Listen for changes in the database
   useEffect(() => {
     const unsubscribe = onSnapshot(
-      doc(db, "links/index"),
+      doc(db, "socials/index"),
       (snapshot) => {
         setData(snapshot.data()!.socials);
       }
@@ -52,7 +53,7 @@ export function SocialMedia() {
         enableReinitialize
         onSubmit={(values, { setSubmitting }) => {
           setSubmitting(true);
-          updateDoc(doc(db, "links/index"), {
+          updateDoc(doc(db, "socials/index"), {
             socials: {
               facebook: values.facebook,
               instagram: values.instagram,
