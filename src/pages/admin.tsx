@@ -1,4 +1,4 @@
-import { ThemeProvider } from "@emotion/react";
+import { ThemeProvider } from '@emotion/react'
 import {
   Button,
   CircularProgress,
@@ -8,75 +8,73 @@ import {
   Paper,
   Stack,
   TextField,
-  Typography,
-} from "@mui/material";
-import { Formik } from "formik";
-import { NextPage } from "next";
-import { useEffect, useState } from "react";
-import styles from "../styles/Home.module.css";
-import { auth } from "../firebase";
-import { Links, NavBar, SocialMedia } from "../components/admin";
-import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
-import { ChangePhoto } from "../components/admin/ChangePhoto";
-
+  Typography
+} from '@mui/material'
+import { Formik } from 'formik'
+import { useContext, useEffect, useState } from 'react'
+import './styles.css'
+import { auth } from '../firebase'
+import { Links, NavBar, SocialMedia, ChangePhoto } from '../components/admin'
+import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth'
+import { DataContext } from '../context'
 const theme = createTheme({
   typography: {
     fontFamily: [
-      "-apple-system",
-      "BlinkMacSystemFont",
+      '-apple-system',
+      'BlinkMacSystemFont',
       '"Segoe UI"',
-      "Roboto",
+      'Roboto',
       '"Helvetica Neue"',
-      "Arial",
-      "sans-serif",
+      'Arial',
+      'sans-serif',
       '"Apple Color Emoji"',
       '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(","),
+      '"Segoe UI Symbol"'
+    ].join(',')
   },
   palette: {
     primary: {
-      main: "#00A3E0",
-    },
-  },
-});
+      main: '#00A3E0'
+    }
+  }
+})
 
-function Login() {
+function Login () {
   return (
-    <div className={styles.main} style={{ justifyContent: "center" }}>
+    <div className="main" style={{ justifyContent: 'center' }}>
       <Paper
-        className={styles.container}
+        className="container"
         sx={{
           height: 315,
           width: 350,
-          alignItems: "center",
-          justifyContent: "center",
+          alignItems: 'center',
+          justifyContent: 'center'
         }}
       >
         <Formik
           initialValues={{
-            email: "",
-            password: "",
+            email: '',
+            password: ''
           }}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
-            setSubmitting(true);
-            await signInWithEmailAndPassword(auth, values.email, values.password);
-            setSubmitting(false);
-            resetForm();
+            setSubmitting(true)
+            await signInWithEmailAndPassword(auth, values.email, values.password)
+            setSubmitting(false)
+            resetForm()
           }}
           validate={(values) => {
-            const errors: any = {};
+            const errors: any = {}
             if (!values.email) {
-              errors.email = "Required";
+              errors.email = 'Required'
             } else if (
               !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
             ) {
-              errors.email = "Invalid email address";
+              errors.email = 'Invalid email address'
             }
             if (!values.password) {
-              errors.password = "Required";
+              errors.password = 'Required'
             }
-            return errors;
+            return errors
           }}
         >
           {({
@@ -86,15 +84,16 @@ function Login() {
             handleChange,
             handleBlur,
             handleSubmit,
-            isSubmitting,
+            isSubmitting
           }) =>
-            !isSubmitting ? (
+            !isSubmitting
+              ? (
               <Stack
                 direction="column"
                 spacing={2}
                 sx={{
                   marginTop: 2,
-                  marginBottom: 2,
+                  marginBottom: 2
                 }}
               >
                 <Typography variant="h6">Administrator Login</Typography>
@@ -120,46 +119,49 @@ function Login() {
                 <Button
                   variant="contained"
                   color="primary"
-                  sx={{ color: "white" }}
+                  sx={{ color: 'white' }}
                   onClick={() => handleSubmit()}
                 >
                   Login
                 </Button>
               </Stack>
-            ) : (
+                )
+              : (
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  height: "100%",
-                  alignItems: "center",
+                  display: 'flex',
+                  justifyContent: 'center',
+                  height: '100%',
+                  alignItems: 'center'
                 }}
               >
                 <CircularProgress />
               </div>
-            )
+                )
           }
         </Formik>
       </Paper>
     </div>
-  );
+  )
 }
 
-function Page() {
+function Page () {
+  const data: any = useContext(DataContext)
+
   return (
-    <div className={styles.main}>
+    <div className="main">
       <NavBar />
       <Hidden smDown>
         <Grid container wrap="nowrap">
           <Grid item xs={12} md={4}>
             <Grid item component={Paper} sx={{ margin: 2, padding: 2 }}>
-              <ChangePhoto />
+              <ChangePhoto photo={data.photo}/>
             </Grid>
             <Grid item component={Paper} sx={{ margin: 2, padding: 2 }}>
-              <SocialMedia />
+              <SocialMedia socials={data.socials}/>
             </Grid>
             <Grid item component={Paper} sx={{ margin: 2, padding: 2 }}>
-              <Links />
+              <Links links={data.links}/>
             </Grid>
           </Grid>
           <Grid
@@ -176,40 +178,42 @@ function Page() {
       <Hidden smUp>
         <Grid container>
           <Grid item component={Paper} sx={{ margin: 2, padding: 2 }} xs={12}>
-            <ChangePhoto />
+            <ChangePhoto photo={data.photo}/>
           </Grid>
           <Grid item component={Paper} sx={{ margin: 2, padding: 2 }} xs={12}>
-            <SocialMedia />
+            <SocialMedia socials={data.socials}/>
           </Grid>
           <Grid item component={Paper} sx={{ margin: 2, padding: 2 }} xs={12}>
-            <Links />
+            <Links links={data.links}/>
           </Grid>
         </Grid>
       </Hidden>
     </div>
-  );
+  )
 }
 
-const Admin: NextPage = () => {
-  const [user, setUser] = useState<null | Boolean>(null);
+const Admin = () => {
+  const [user, setUser] = useState<null | Boolean>(null)
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      if (user) setUser(true);
-      else setUser(false);
-    });
-  }, []);
+      if (user) setUser(true)
+      else setUser(false)
+    })
+  }, [])
 
   return (
     <ThemeProvider theme={theme}>
-      { user === false ? <Login />
-      : user === true ? <Page />
-      : <div className={styles.main} style={{ justifyContent: "center" }}>
+      { user === false
+        ? <Login />
+        : user === true
+          ? <Page />
+          : <div className="main" style={{ justifyContent: 'center' }}>
           <CircularProgress />
         </div>
       }
     </ThemeProvider>
-  );
-};
+  )
+}
 
-export default Admin;
+export default Admin

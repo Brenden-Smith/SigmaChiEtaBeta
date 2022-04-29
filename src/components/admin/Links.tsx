@@ -1,66 +1,65 @@
-import { Button, IconButton, Input, Paper, Stack, Typography } from '@mui/material';
-import { animate, MotionValue, Reorder, useDragControls, useMotionValue } from 'framer-motion';
-import { useEffect, useState } from "react";
-import DeleteIcon from '@mui/icons-material/Delete';
-import MenuIcon from "@mui/icons-material/Menu";
-import { DeleteDialog } from './DeleteDialog';
-import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
-import EditIcon from '@mui/icons-material/Edit';
-import { LinkDialog } from './LinkDialog';
+import { Button, IconButton, Paper, Stack, Typography } from '@mui/material'
+import { animate, MotionValue, Reorder, useMotionValue } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import DeleteIcon from '@mui/icons-material/Delete'
+import MenuIcon from '@mui/icons-material/Menu'
+import { DeleteDialog } from './DeleteDialog'
+import { doc, updateDoc } from 'firebase/firestore'
+import { db } from '../../firebase'
+import EditIcon from '@mui/icons-material/Edit'
+import { LinkDialog } from './LinkDialog'
 
-const inactiveShadow = "0px 0px 0px rgba(0,0,0,0.8)";
+const inactiveShadow = '0px 0px 0px rgba(0,0,0,0.8)'
 
-function useRaisedShadow(value: MotionValue<number>) {
-  const boxShadow = useMotionValue(inactiveShadow);
+function useRaisedShadow (value: MotionValue<number>) {
+  const boxShadow = useMotionValue(inactiveShadow)
 
   useEffect(() => {
-    let isActive = false;
+    let isActive = false
     value.onChange((latest) => {
-      const wasActive = isActive;
+      const wasActive = isActive
       if (latest !== 0) {
-        isActive = true;
+        isActive = true
         if (isActive !== wasActive) {
-          animate(boxShadow, "5px 5px 10px rgba(0,0,0,0.3)");
+          animate(boxShadow, '5px 5px 10px rgba(0,0,0,0.3)')
         }
       } else {
-        isActive = false;
+        isActive = false
         if (isActive !== wasActive) {
-          animate(boxShadow, inactiveShadow);
+          animate(boxShadow, inactiveShadow)
         }
       }
-    });
-  }, [value, boxShadow]);
+    })
+  }, [value, boxShadow])
 
-  return boxShadow;
+  return boxShadow
 }
 
-function LinkItem({ item, update }: { 
+function LinkItem ({ item, update }: {
   item: Record<string, string>
   update: Function
 }) {
+  const y = useMotionValue(0)
+  const boxShadow = useRaisedShadow(y)
+  const { title, url, id } = item
 
-  const y = useMotionValue(0);
-  const boxShadow = useRaisedShadow(y);
-  const { title, url, id } = item;
-
-  const [delDialog, openDelDialog] = useState(false);
-  const [editDialog, openEditDialog] = useState(false);
+  const [delDialog, openDelDialog] = useState(false)
+  const [editDialog, openEditDialog] = useState(false)
 
   return (
     <Reorder.Item
       value={item}
       id={id}
-      style={{ y, boxShadow, margin: "15px" }}
+      style={{ y, boxShadow, margin: '15px' }}
     >
       <Paper
         sx={{
           padding: 2,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "left",
-          justifyContent: "center",
-          width: "100%",
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'left',
+          justifyContent: 'center',
+          width: '100%'
         }}
       >
         <Stack direction="row" justifyContent="space-between">
@@ -80,7 +79,7 @@ function LinkItem({ item, update }: {
               <IconButton onClick={() => openDelDialog(true)}>
                 <DeleteIcon />
               </IconButton>
-              <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
                 {title}
               </Typography>
             </Stack>
@@ -101,43 +100,28 @@ function LinkItem({ item, update }: {
         </Stack>
       </Paper>
     </Reorder.Item>
-  );
+  )
 };
 
-export function Links() {
+export function Links ({ links }: { links: any }) {
+  const [addLink, setAddLink] = useState(false)
 
-  const [links, setLinks] = useState<any>([]);
-  const [addLink, setAddLink] = useState(false);
-
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      doc(db, "links/index"),
-      (snapshot) => {
-        setLinks(snapshot.data()!.links);
-      }
-    )
-    return () => {
-      unsubscribe();
-    }
-  }, []);
-
-  function updateLink(item: any) {
-    const newLinks = [...links];
-    const index = newLinks.findIndex((link) => link.id === item.id);
-    newLinks[index] = item;
-    setLinks(newLinks);
-    updateDoc(doc(db, "links/index"), { links: newLinks });
+  function updateLink (item: any) {
+    const newLinks = [...links]
+    const index = newLinks.findIndex((link) => link.id === item.id)
+    newLinks[index] = item
+    updateDoc(doc(db, 'site/index'), { links: newLinks })
   }
 
   return (
-    <Stack direction="column" spacing={2} sx={{ width: "100%" }}>
+    <Stack direction="column" spacing={2} sx={{ width: '100%' }}>
       <Stack direction="row" spacing={2} justifyContent="space-between">
         <Typography variant="h5">Links</Typography>
         <Stack direction="row" spacing={2}>
           <LinkDialog open={addLink} setOpen={setAddLink} />
           <Button
             variant="contained"
-            sx={{ color: "white" }}
+            sx={{ color: 'white' }}
             onClick={() => setAddLink(true)}
           >
             Add New Link
@@ -148,13 +132,12 @@ export function Links() {
       <Reorder.Group
         axis="y"
         onReorder={(newLinks) => {
-          updateDoc(doc(db, "links/index"), { links: newLinks });
-          setLinks(newLinks);
+          updateDoc(doc(db, 'site/index'), { links: newLinks })
         }}
         values={links}
         style={{
-          listStyle: "none",
-          overflow: "hidden",
+          listStyle: 'none',
+          overflow: 'hidden'
         }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -165,5 +148,5 @@ export function Links() {
         ))}
       </Reorder.Group>
     </Stack>
-  );
+  )
 }

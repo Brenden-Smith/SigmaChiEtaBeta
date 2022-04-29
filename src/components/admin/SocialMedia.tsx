@@ -1,109 +1,92 @@
-import { Facebook, Instagram } from "@mui/icons-material";
-import Twitter from "@mui/icons-material/Twitter";
-import { Button, Input, Stack, Typography } from "@mui/material";
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { Formik } from "formik";
-import { useEffect, useState } from "react";
-import { db } from "../../firebase";
+import { Facebook, Instagram } from '@mui/icons-material'
+import Twitter from '@mui/icons-material/Twitter'
+import { Button, Input, Stack, Typography } from '@mui/material'
+import { doc, updateDoc } from 'firebase/firestore'
+import { Formik } from 'formik'
+import 'react'
+import { db } from '../../firebase'
 
-function Object({value, setValue}: {
+function Object ({ value, setValue }: {
   value: any,
   setValue: any
 }) {
-
   return (
     <Input
       sx={{
-        fontSize: "1rem",
-        width: "100%",
+        fontSize: '1rem',
+        width: '100%'
       }}
       value={value}
       onChange={(e: any) => {
-        setValue(e.target.value);
+        setValue(e.target.value)
       }}
     />
-  );
+  )
 }
 
-export function SocialMedia() {
-
-  const [data, setData] = useState<any>({});
-
-  // Listen for changes in the database
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      doc(db, "socials/index"),
-      (snapshot) => {
-        setData(snapshot.data()!.socials);
-      }
-    );
-    return () => {
-      unsubscribe();
-    }
-  }, []);
-
+export function SocialMedia ({ socials }: { socials: any }) {
   return (
     <Stack direction="column" spacing={2}>
       <Formik
         initialValues={{
-          facebook: data.facebook,
-          instagram: data.instagram,
-          twitter: data.twitter,
+          facebook: socials.facebook,
+          instagram: socials.instagram,
+          twitter: socials.twitter
         }}
         enableReinitialize
         onSubmit={(values, { setSubmitting }) => {
-          setSubmitting(true);
-          updateDoc(doc(db, "socials/index"), {
+          setSubmitting(true)
+          updateDoc(doc(db, 'site/index'), {
             socials: {
               facebook: values.facebook,
               instagram: values.instagram,
-              twitter: values.twitter,
-            },
-          });
-          setSubmitting(false);
+              twitter: values.twitter
+            }
+          })
+          setSubmitting(false)
         }}
         validate={(values) => {
-          const errors: any = {};
+          const errors: any = {}
           if (!values.facebook) {
-            errors.facebook = "Required";
+            errors.facebook = 'Required'
           }
           if (values.facebook) {
             try {
-              const url = new URL(values.facebook);
+              const url = new URL(values.facebook)
               if (!url.hostname) {
-                errors.facebook = "Invalid URL";
+                errors.facebook = 'Invalid URL'
               }
             } catch (e) {
-              errors.facebook = "Invalid URL";
+              errors.facebook = 'Invalid URL'
             }
           }
           if (!values.twitter) {
-            errors.twitter = "Required";
+            errors.twitter = 'Required'
           }
           if (values.twitter) {
             try {
-              const url = new URL(values.twitter);
+              const url = new URL(values.twitter)
               if (!url.hostname) {
-                errors.twitter = "Invalid URL";
+                errors.twitter = 'Invalid URL'
               }
             } catch (e) {
-              errors.twitter = "Invalid URL";
+              errors.twitter = 'Invalid URL'
             }
           }
           if (!values.instagram) {
-            errors.instagram = "Required";
+            errors.instagram = 'Required'
           }
           if (values.instagram) {
             try {
-              const url = new URL(values.instagram);
+              const url = new URL(values.instagram)
               if (!url.hostname) {
-                errors.instagram = "Invalid URL";
+                errors.instagram = 'Invalid URL'
               }
             } catch (e) {
-              errors.instagram = "Invalid URL";
+              errors.instagram = 'Invalid URL'
             }
           }
-          return errors;
+          return errors
         }}
       >
         {({
@@ -114,16 +97,16 @@ export function SocialMedia() {
           handleBlur,
           handleSubmit,
           handleReset,
-          isSubmitting,
+          isSubmitting
         }) => (
           <>
             <Stack direction="row" spacing={2} justifyContent="space-between">
               <Typography variant="h5">Social Media</Typography>
               <Button
                 variant="contained"
-                sx={{ backgroundColor: "green", color: "white" }}
+                sx={{ backgroundColor: 'green', color: 'white' }}
                 disabled={
-                  JSON.stringify(values) === JSON.stringify(data) ||
+                  JSON.stringify(values) === JSON.stringify(socials) ||
                   !isSubmitting
                 }
                 onClick={() => handleSubmit()}
@@ -131,13 +114,13 @@ export function SocialMedia() {
                 Save
               </Button>
             </Stack>
-            <Stack direction="column" spacing={2} sx={{ width: "100%" }}>
+            <Stack direction="column" spacing={2} sx={{ width: '100%' }}>
               <Stack direction="row" spacing={2} alignItems="center">
                 <Facebook/>
                 <Object
                   value={values.facebook}
                   setValue={(value: string) => {
-                    handleChange({ target: { name: "facebook", value } });
+                    handleChange({ target: { name: 'facebook', value } })
                   }}
                 />
               </Stack>
@@ -146,7 +129,7 @@ export function SocialMedia() {
                 <Object
                   value={values.instagram}
                   setValue={(value: string) => {
-                    handleChange({ target: { name: "instagram", value } });
+                    handleChange({ target: { name: 'instagram', value } })
                   }}
                 />
               </Stack>
@@ -155,7 +138,7 @@ export function SocialMedia() {
                 <Object
                   value={values.twitter}
                   setValue={(value: string) => {
-                    handleChange({ target: { name: "twitter", value } });
+                    handleChange({ target: { name: 'twitter', value } })
                   }}
                 />
               </Stack>
@@ -164,5 +147,5 @@ export function SocialMedia() {
         )}
       </Formik>
     </Stack>
-  );
+  )
 }
