@@ -1,6 +1,6 @@
 import { Button, Stack } from "@mui/material";
 import { logEvent } from "firebase/analytics";
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { analytics, db } from "../../firebase";
 
@@ -9,13 +9,10 @@ export const Links = () => {
   // Listen for link changes
   const [links, setLinks] = useState<any>([]);
   useEffect(() => {
-    const unsubscribe = onSnapshot(doc(db, "links/index"), (snapshot) => {
-      setLinks(snapshot.data()!.links);
+    getDoc(doc(db, "links/index")).then((snap) => {
+      setLinks(snap.data()!.links);
     });
-    return () => {
-      unsubscribe();
-    };
-  }, [links]);
+  }, []);
 
   // Render components
   return (

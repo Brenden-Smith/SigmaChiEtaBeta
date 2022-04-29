@@ -1,5 +1,5 @@
 import { Avatar } from "@mui/material";
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { db } from "../../firebase";
@@ -9,10 +9,9 @@ export const Photo = () => {
 
   // Listen to changes in the database
   useEffect(() => {
-    const unsub = onSnapshot(doc(db, "site/index"), (snapshot) => {
-      setPhoto(snapshot.data()?.photo);
+    getDoc(doc(db, "site/index")).then((snap) => {
+      setPhoto(snap.data()?.photo);
     });
-    return () => unsub();
   }, []);
 
   return (
