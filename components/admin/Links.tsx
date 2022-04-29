@@ -113,7 +113,7 @@ export function Links() {
     const unsubscribe = onSnapshot(
       doc(db, "links/index"),
       (snapshot) => {
-        if (snapshot.data()!.links !== links) setLinks(snapshot.data()!.links);
+        setLinks(snapshot.data()!.links);
       }
     )
     return () => {
