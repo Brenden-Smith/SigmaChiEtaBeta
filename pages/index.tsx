@@ -34,7 +34,7 @@ const Home: NextPage = () => {
         <link
           rel="stylesheet"
           href="https://use.typekit.net/day6akr.css"
-        ></link>{" "}
+        />
       </Head>
       <ThemeProvider theme={theme}>
         <div className={styles.main}>
