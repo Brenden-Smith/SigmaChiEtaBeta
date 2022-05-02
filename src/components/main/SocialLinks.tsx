@@ -8,13 +8,16 @@ import 'react'
 
 export const SocialLinks = ({ socials }: { socials: any}) => {
   // Render component
+
+  const color = '#FFD141'
+
   return (
     <Stack direction="row">
       <IconButton
         size="large"
         href={socials.instagram}
         target="_blank"
-        sx={{ color: 'black' }}
+        sx={{ color: color }}
         onClick={() =>
           logEvent(analytics, 'link', {
             title: 'Instagram',
@@ -28,7 +31,7 @@ export const SocialLinks = ({ socials }: { socials: any}) => {
         size="large"
         href={socials.facebook}
         target="_blank"
-        sx={{ color: 'black' }}
+        sx={{ color: color }}
         onClick={() =>
           logEvent(analytics, 'link', {
             title: 'Facebook',
@@ -42,7 +45,7 @@ export const SocialLinks = ({ socials }: { socials: any}) => {
         size="large"
         href={socials.twitter}
         target="_blank"
-        sx={{ color: 'black' }}
+        sx={{ color: color }}
         onClick={() =>
           logEvent(analytics, 'link', {
             title: 'Twitter',
