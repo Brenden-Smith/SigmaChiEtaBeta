@@ -151,43 +151,45 @@ function Page () {
   return (
     <div className="main">
       <NavBar />
-      <Hidden smDown>
-        <Grid container wrap="nowrap">
-          <Grid item xs={12} md={4}>
-            <Grid item component={Paper} sx={{ margin: 2, padding: 2 }}>
-              <ChangePhoto photo={data.photo}/>
+      <div className="content">
+        <Hidden smDown>
+          <Grid container wrap="nowrap">
+            <Grid item xs={12} md={4}>
+              <Grid item component={Paper} sx={{ margin: 2, padding: 2 }}>
+                <ChangePhoto photo={data.photo} />
+              </Grid>
+              <Grid item component={Paper} sx={{ margin: 2, padding: 2 }}>
+                <SocialMedia socials={data.socials} />
+              </Grid>
+              <Grid item component={Paper} sx={{ margin: 2, padding: 2 }}>
+                <Links links={data.links} />
+              </Grid>
             </Grid>
-            <Grid item component={Paper} sx={{ margin: 2, padding: 2 }}>
-              <SocialMedia socials={data.socials}/>
+            <Grid
+              item
+              component={Paper}
+              xs={12}
+              md={8}
+              sx={{ margin: 2, padding: 2 }}
+            >
+              <Typography variant="h5">Analytics</Typography>
             </Grid>
-            <Grid item component={Paper} sx={{ margin: 2, padding: 2 }}>
-              <Links links={data.links}/>
+          </Grid>
+        </Hidden>
+        <Hidden smUp>
+          <Grid container>
+            <Grid item component={Paper} sx={{ margin: 2, padding: 2 }} xs={12}>
+              <ChangePhoto photo={data.photo} />
+            </Grid>
+            <Grid item component={Paper} sx={{ margin: 2, padding: 2 }} xs={12}>
+              <SocialMedia socials={data.socials} />
+            </Grid>
+            <Grid item component={Paper} sx={{ margin: 2, padding: 2 }} xs={12}>
+              <Links links={data.links} />
             </Grid>
           </Grid>
-          <Grid
-            item
-            component={Paper}
-            xs={12}
-            md={8}
-            sx={{ margin: 2, padding: 2 }}
-          >
-            <Typography variant="h5">Analytics</Typography>
-          </Grid>
-        </Grid>
-      </Hidden>
-      <Hidden smUp>
-        <Grid container>
-          <Grid item component={Paper} sx={{ margin: 2, padding: 2 }} xs={12}>
-            <ChangePhoto photo={data.photo}/>
-          </Grid>
-          <Grid item component={Paper} sx={{ margin: 2, padding: 2 }} xs={12}>
-            <SocialMedia socials={data.socials}/>
-          </Grid>
-          <Grid item component={Paper} sx={{ margin: 2, padding: 2 }} xs={12}>
-            <Links links={data.links}/>
-          </Grid>
-        </Grid>
-      </Hidden>
+        </Hidden>
+      </div>
     </div>
   )
 }

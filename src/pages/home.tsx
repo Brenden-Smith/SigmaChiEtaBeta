@@ -29,10 +29,11 @@ const Home = () => {
   const data: any = useContext(DataContext)
 
   return (
-      <ThemeProvider theme={theme}>
-        {data
-          ? (
-          <div className="main">
+    <ThemeProvider theme={theme}>
+      {data
+        ? (
+        <div className="main">
+          <div className="content">
             <Stack direction="column" spacing={2}>
               <Stack direction="column" className="container" spacing={1}>
                 <Avatar sx={{ height: 100, width: 100 }} src={data.photo} />
@@ -41,17 +42,25 @@ const Home = () => {
                 </Typography>
                 <SocialLinks socials={data.socials} />
               </Stack>
-              <Links links={data.links}/>
+              <Links links={data.links} />
             </Stack>
             <ShareIcon />
           </div>
-            )
-          : (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-            <CircularProgress />
-          </div>
-            )}
-      </ThemeProvider>
+        </div>
+          )
+        : (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh'
+          }}
+        >
+          <CircularProgress />
+        </div>
+          )}
+    </ThemeProvider>
   )
 }
 
